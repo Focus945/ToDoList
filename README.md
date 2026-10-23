@@ -29,6 +29,8 @@ The project is currently in active development.
 - Apache Tomcat 10.1
 - HTML5
 - CSS3
+- PostgreSQL 16
+- Hibernate 6
 
 ## Project Structure
 
@@ -78,6 +80,21 @@ The application will be available at:
 ```text
 http://localhost:8081/ToDoList
 ```
+
+## Running PostgreSQL
+PostgreSQL can be started using Docker:
+```bash
+docker run -d `
+  --name todolist-postgres `
+  -p 5433:5432 `
+  -e POSTGRES_DB=todolist `
+  -e POSTGRES_USER=postgres `
+  -e POSTGRES_PASSWORD=postgres `
+  -v todolist_pgdata:/var/lib/postgresql/data `
+  --restart unless-stopped `
+  postgres:16-alpine
+ ```
+Before launching the application, spin up a PostgreSQL container.
 ## Preview
 
 ![ToDoList Preview](images/preview.png)

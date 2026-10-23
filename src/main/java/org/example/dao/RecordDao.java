@@ -1,39 +1,47 @@
 package org.example.dao;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.example.entity.Record;
 import org.example.entity.RecordStatus;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class RecordDao {
-    private final List<Record> records = new ArrayList<>(
-            Arrays.asList(
-                    new Record("Take a shower", RecordStatus.ACTIVE),
-                    new Record("Buy flowers", RecordStatus.ACTIVE),
-                    new Record("GO to the GYM", RecordStatus.ACTIVE)
-            )
-    );
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Transactional
     public List<Record> findAll() {
-        return new ArrayList<>(records);
+        Query query = entityManager.createQuery("SELECT r FROM Record r ORDER BY r.id ASC");
+        List<Record> records = query.getResultList();
+        return records;
     }
 
-    public void saveRecord(Record record){
-        records.add(record);
+    @Transactional
+    public void saveRecord(Record record) {
+
+        entityManager.persist(record);
     }
-    public void updateRecordStatus(int id, RecordStatus newStatus){
-        for(Record item : records){
-            if(item.getId() == id){
-                item.setStatus(newStatus);
-                break;
-            }
-        }
+
+    @Transactional
+    public void updateRecordStatus(int id, RecordStatus newStatus) {
+        Query query = entityManager.createQuery("UPDATE Record SET status = :newStatus WHERE id = :id");
+        query.setParameter("newStatus", newStatus);
+        query.setParameter("id", id);
+        query.executeUpdate();
     }
-    public void deleteRecord(int id){
-        records.removeIf(item -> item.getId() == id);
+
+    @Transactional
+    public void deleteRecord(int id) {
+        Query query = entityManager.createQuery("DELETE FROM Record WHERE id = :id");
+        query.setParameter("id", id);
+        query.executeUpdate();
     }
 
 }

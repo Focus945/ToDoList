@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.transaction.Transactional;
 import org.example.dao.RecordDao;
 
 import org.example.dto.RecordsContainerDto;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class RecordService {
     private final RecordDao recordDao;
 
